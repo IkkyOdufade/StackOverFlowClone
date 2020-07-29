@@ -4,8 +4,7 @@ const redis = require('redis');
 const client = redis.createClient(6379, 'redis')
 
 
-
-
+//function for adding a new question
 const addQuestion = async (req, res)=>{
     const question = req.body;
     const questId = req.body.questionId;
@@ -28,6 +27,7 @@ const addQuestion = async (req, res)=>{
     }
 
 };
+//function for getting  all the questions on the database
 const AllQuestions = async(req, res) =>{
     try{
         const data = await question.find().populate('allQuestions');
@@ -42,6 +42,7 @@ const AllQuestions = async(req, res) =>{
     }
 
 };
+//function for caching all the questions from the database
 const cache = (req, res, next) => {
         client.get("/all", (err, data)=> {
             if (err) {
@@ -55,8 +56,30 @@ const cache = (req, res, next) => {
         })
 };
 
+
+
+const DeleteQuestion = async (req,res) => {
+    const data = req.body
+    try{
+          await question.deleteOne( { _id: data.question }
+          , function(err, obj) {
+            if (err) return  res.status(401).json({error:true});
+            else {
+                res.json({msg:data.question + " document deleted"});
+            }
+        });
+
+        // res.send(question_de, "err")
+    }
+   catch (e) {
+       console.log(e, "mess")
+       return  res.status(401).json({error:true});
+   }
+}
+
 module.exports =  {
     addQuestion,
     AllQuestions,
-    cache
+    cache,
+    DeleteQuestion
 };

@@ -19,6 +19,8 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", (err) => {
     console.log("Database error:" + err);
 });
+
+
 client.on('connect', () => console.log('Connected to Redis') )
 
 app.use(cors());
