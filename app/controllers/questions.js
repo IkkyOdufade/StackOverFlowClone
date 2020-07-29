@@ -33,7 +33,7 @@ const AllQuestions = async(req, res) =>{
         const data = await question.find().populate('allQuestions');
         console.log("Getting questions")
         res.send(data);
-        client.setex(questions, 3600, data);
+        client.setex("/all", 3600, JSON.stringify(data));
 
     }
     catch (e) {
@@ -42,8 +42,21 @@ const AllQuestions = async(req, res) =>{
     }
 
 };
+const cache = (req, res, next) => {
+        client.get("/all", (err, data)=> {
+            if (err) {
+                return err;
+            } else if (data !== null) {
+                res.send(data);
+
+            } else {
+                next();
+            }
+        })
+};
 
 module.exports =  {
     addQuestion,
-    AllQuestions
+    AllQuestions,
+    cache
 };

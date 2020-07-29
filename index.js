@@ -8,6 +8,7 @@ const client = redis.createClient(6379, 'redis')
 const dbURI = 'mongodb://mongo:27017/sauth';
 const {Qrouter} = require("./app/routes/questions");
 const {Arouter} = require("./app/routes/answers");
+const cache = require('./app/controllers/questions');
 
 
 
@@ -23,9 +24,7 @@ client.on('connect', () => console.log('Connected to Redis') )
 app.use(cors());
 app.use(express.json());
 
-// client.on("connect", function() {
-//     console.log("You are now connected");
-// });
+
 
 app.use('/questions', Qrouter);
 app.use('/answers', Arouter);
